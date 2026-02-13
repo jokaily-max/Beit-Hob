@@ -107,7 +107,7 @@
         },
         {
           "thursday": 15,
-          "monthly": 0,
+          "monthly": 50,
           "fullMonth": 0
         },
         {
@@ -1072,6 +1072,16 @@
       "direction": "received",
       "weekDate": "2026-02-05",
       "timestamp": "2026-02-13T11:14:24.682Z"
+    },
+    {
+      "id": 1770981268975.4553,
+      "entrantIndex": 16,
+      "entrantName": "Shams",
+      "amount": 50,
+      "type": "monthly",
+      "direction": "received",
+      "weekDate": "2026-02-05",
+      "timestamp": "2026-02-13T11:14:28.975Z"
     }
   ],
   "payoutHistory": [
