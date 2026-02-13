@@ -211,7 +211,7 @@
           "fullMonth": 0
         },
         {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -338,7 +338,7 @@
       ]
     }
   ],
-  "currentWeekIndex": 0,
+  "currentWeekIndex": 1,
   "poolRecipientIndex": 1,
   "payouts": [
     {
@@ -1082,6 +1082,16 @@
       "direction": "received",
       "weekDate": "2026-02-05",
       "timestamp": "2026-02-13T11:14:28.975Z"
+    },
+    {
+      "id": 1770981276375.0942,
+      "entrantIndex": 16,
+      "entrantName": "Shams",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-12",
+      "timestamp": "2026-02-13T11:14:36.375Z"
     }
   ],
   "payoutHistory": [
