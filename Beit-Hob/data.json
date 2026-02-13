@@ -106,7 +106,7 @@
           "fullMonth": 0
         },
         {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -338,7 +338,7 @@
       ]
     }
   ],
-  "currentWeekIndex": 1,
+  "currentWeekIndex": 0,
   "poolRecipientIndex": 1,
   "payouts": [
     {
@@ -1032,6 +1032,16 @@
       "direction": "received",
       "weekDate": "2026-02-12",
       "timestamp": "2026-02-13T11:10:45.944Z"
+    },
+    {
+      "id": 1770981053463.6284,
+      "entrantIndex": 16,
+      "entrantName": "شمس",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-05",
+      "timestamp": "2026-02-13T11:10:53.463Z"
     }
   ],
   "payoutHistory": [
