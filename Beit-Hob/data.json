@@ -1124,7 +1124,19 @@
       "notes": ""
     }
   ],
-  "expenseEntries": [],
+  "expenseEntries": [
+    {
+      "id": 1771001854342.5522,
+      "cashBox": "beit-hob",
+      "currency": "USD",
+      "amount": 52,
+      "amountUSD": 52,
+      "date": "2026-02-13",
+      "description": "Electricity EDL",
+      "timestamp": "2026-02-13T16:57:34.342Z",
+      "exchangeRate": null
+    }
+  ],
   "investmentEntries": [],
   "exchangeRate": 89500
 }
