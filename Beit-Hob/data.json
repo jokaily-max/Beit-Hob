@@ -339,13 +339,21 @@
     }
   ],
   "currentWeekIndex": 1,
-  "poolRecipientIndex": 1,
+  "poolRecipientIndex": 2,
   "payouts": [
     {
       "recipientIndex": 0,
       "recipientName": "David",
       "amount": 300,
       "date": "2026-02-06",
+      "notes": "",
+      "paid": true
+    },
+    {
+      "recipientIndex": 1,
+      "recipientName": "Jabal",
+      "amount": 300,
+      "date": "2026-02-13",
       "notes": "",
       "paid": true
     }
@@ -556,7 +564,7 @@
     {
       "id": 1770410542232.5647,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 15,
       "type": "thursday",
       "direction": "received",
@@ -566,7 +574,7 @@
     {
       "id": 1770410554791.4473,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 50,
       "type": "monthly",
       "direction": "received",
@@ -876,7 +884,7 @@
     {
       "id": 1770817053208.718,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 15,
       "type": "thursday",
       "direction": "received",
@@ -886,7 +894,7 @@
     {
       "id": 1770817055032.7522,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 50,
       "type": "monthly",
       "direction": "received",
@@ -1016,7 +1024,7 @@
     {
       "id": 1770975961493.8284,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 15,
       "type": "thursday",
       "direction": "received",
@@ -1026,7 +1034,7 @@
     {
       "id": 1770981045944.6245,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂ´ÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 15,
       "type": "thursday",
       "direction": "received",
@@ -1036,7 +1044,7 @@
     {
       "id": 1770981053463.6284,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂ´ÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 15,
       "type": "thursday",
       "direction": "received",
@@ -1046,7 +1054,7 @@
     {
       "id": 1770981055920.6694,
       "entrantIndex": 16,
-      "entrantName": "ÃÂÃÂ´ÃÂÃÂÃÂÃÂ³",
+      "entrantName": "ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³",
       "amount": 50,
       "type": "monthly",
       "direction": "received",
@@ -1103,6 +1111,16 @@
       "direction": "paid",
       "date": "2026-02-06",
       "timestamp": "2026-02-07T00:53:23.097Z",
+      "notes": ""
+    },
+    {
+      "id": 1771001402433.7634,
+      "recipientIndex": 1,
+      "recipientName": "Jabal",
+      "amount": 300,
+      "direction": "paid",
+      "date": "2026-02-13",
+      "timestamp": "2026-02-13T16:50:02.434Z",
       "notes": ""
     }
   ],
