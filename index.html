@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Pool Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .summary-box {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .summary-box.highlight {
+            border-left-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .summary-box h3 {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .summary-box .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .controls button:hover {
+            background: #2980b9;
+        }
+        
+        .controls button.secondary {
+            background: #95a5a6;
+        }
+        
+        .controls button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .controls button.whatsapp-notify {
+            background: #25D366;
+        }
+
+        .controls button.whatsapp-notify:hover {
+            background: #1da851;
+        }
+        
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .status.paid {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .status.partial {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .status.unpaid {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status.overpaid {
+            background: #9b59b6;
+            color: white;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 6px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .debt-info {
+            font-size: 12px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        .overpaid-info {
+            font-size: 12px;
+            color: #9b59b6;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        .next-recipient {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content textarea {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .week-selector {
+            margin: 15px 0;
+        }
+        
+        .week-selector label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .week-selector select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #bdc3c7;
+            font-size: 14px;
+        }
+
+        .entrant-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .entrant-item:hover {
+            background: #e9ecef;
+            border-color: #3498db;
+        }
+
+        .entrant-item.dragging {
+            opacity: 0.5;
+            border-color: #3498db;
+        }
+
+        .entrant-item.drag-over {
+            border-top: 3px solid #3498db;
+        }
+
+        .drag-handle {
+            font-size: 18px;
+            color: #95a5a6;
+            margin-right: 10px;
+            cursor: move;
+        }
+
+        .entrant-number {
+            background: #3498db;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .entrant-name-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .entrant-name-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .remove-entrant {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .remove-entrant:hover {
+            background: #c0392b;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button:hover {
+            color: #2c3e50;
+            background: #f8f9fa;
+        }
+
+        .tab-button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .payout-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .payout-card.pending {
+            border-left: 4px solid #f39c12;
+        }
+
+        .payout-card.paid {
+            border-left: 4px solid #27ae60;
+        }
+
+        .payout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .payout-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .payout-status {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .payout-status.pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .payout-status.paid {
+            background: #27ae60;
+            color: white;
+        }
+
+        .payout-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .payout-detail {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .payout-detail label {
+            display: block;
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .payout-detail input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .payout-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .summary-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: 50px 2fr 1fr 1fr 1fr 1.5fr;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+        }
+
+        .summary-row.header {
+            background: #34495e;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .summary-row:hover:not(.header) {
+            background: #f8f9fa;
+        }
+
+        .projection {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .transaction-log {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            display: grid;
+            grid-template-columns: 150px 100px 2fr 1fr 1fr 80px;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .transaction-item:hover {
+            background: #f8f9fa;
+        }
+
+        .transaction-item.received {
+            border-left: 4px solid #27ae60;
+        }
+
+        .transaction-item.paid {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .transaction-type {
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            background: #ecf0f1;
+            display: inline-block;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .transaction-amount.positive {
+            color: #27ae60;
+        }
+
+        .transaction-amount.negative {
+            color: #e74c3c;
+        }
+
+        .date-badge {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .transaction-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .transaction-actions button {
+            padding: 4px 8px;
+            font-size: 11px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .transaction-actions button.edit {
+            background: #3498db;
+        }
+
+        .transaction-actions button.delete {
+            background: #e74c3c;
+        }
+
+        .expense-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .expense-form h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .expense-form .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .expense-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expense-form label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .expense-form input, .expense-form select, .expense-form textarea {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .expense-form textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .expense-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .expense-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .expense-list-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .expense-item {
+            display: grid;
+            grid-template-columns: 140px 90px 100px 1fr 130px 80px;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+        }
+
+        .expense-item:hover {
+            background: #f8f9fa;
+        }
+
+        .expense-item.beit-hob-expense {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .expense-item.investment-expense {
+            border-left: 4px solid #9b59b6;
+        }
+
+        .expense-item.pool-expense {
+            border-left: 4px solid #3498db;
+        }
+
+        .expense-item-header {
+            display: grid;
+            grid-template-columns: 140px 90px 100px 1fr 130px 80px;
+            gap: 12px;
+            padding: 10px 20px;
+            background: #34495e;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .cashbox-tag {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            display: inline-block;
+        }
+
+        .cashbox-tag.beit-hob { background: #e74c3c; }
+        .cashbox-tag.investment { background: #9b59b6; }
+        .cashbox-tag.pool { background: #3498db; }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sort-controls button {
+            padding: 5px 12px;
+            font-size: 12px;
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .sort-controls button.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .rate-settings-box {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rate-settings-box label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .rate-settings-box input {
+            padding: 7px 10px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            font-size: 15px;
+            width: 120px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .rate-note {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💰 Money Pool Tracker</h1>
+        <div class="date-badge">📅 Today: <span id="currentDate"></span></div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('payments')">💵 Payments</button>
+            <button class="tab-button" onclick="switchTab('summary')">📊 Summary</button>
+            <button class="tab-button" onclick="switchTab('payouts')">💸 Pool Payouts</button>
+            <button class="tab-button" onclick="switchTab('transactions')">📝 Transaction Log</button>
+            <button class="tab-button" onclick="switchTab('expenses')">🧾 Expenses</button>
+            <button class="tab-button" onclick="switchTab('investments')">📈 Investments</button>
+            <button class="tab-button" onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+
+        <div class="summary">
+            <div class="summary-box">
+                <h3>Investment Cash Box</h3>
+                <div class="value" id="investmentTotal">$0</div>
+            </div>
+            <div class="summary-box">
+                <h3>Beit Hob Cash Box</h3>
+                <div class="value" id="beitHobTotal">$0</div>
+            </div>
+            <div class="summary-box highlight">
+                <h3>Next Pool Recipient</h3>
+                <div class="value" id="nextRecipient">-</div>
+            </div>
+            <div class="summary-box">
+                <h3>Total Outstanding Debt</h3>
+                <div class="value" id="totalDebt">$0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="week-selector">
+            <label for="weekSelect">Current Week:</label>
+            <select id="weekSelect"></select>
+            <button onclick="addNewWeek()" style="margin-left: 10px;">Add New Week</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <button onclick="showManageEntrants()">👥 Manage People</button>
+            <button onclick="showWhatsAppSettings()">📱 WhatsApp Settings</button>
+            <button onclick="notifyDuePayments()" class="whatsapp-notify">📢 Notify This Week's Payers</button>
+            <button onclick="saveData()">💾 Save Data</button>
+            <button onclick="exportToExcel()">📊 Export Full Report (Excel)</button>
+            <button onclick="exportTransactionsToExcel()" style="background: #16a085;">📊 Export Transactions (Excel)</button>
+            <button onclick="exportToFile()">📤 Export to File</button>
+            <button onclick="importFromFile()" class="secondary">📥 Import from File</button>
+            <button onclick="clearAllData()" class="secondary">🗑️ Clear All</button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+    </div>
+
+    <div id="paymentsTab" class="tab-content active">
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; color: #2c3e50;">Monthly Cost Breakdown</h3>
+                <div>
+                    <button onclick="sortPaymentsTable('number')" style="padding: 6px 12px; margin-right: 5px;">Sort by #</button>
+                    <button onclick="sortPaymentsTable('name')" style="padding: 6px 12px;">Sort by Name</button>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <div style="background: #ecf0f1; padding: 10px; border-radius: 4px;">
+                    <div style="font-size: 12px; color: #7f8c8d;">Weekly Thursday Payment</div>
+                    <div style="font-size: 18px; font-weight: bold; color: #2c3e50;">$15 × 4 = $60</div>
+                </div>
+                <div style="background: #ecf0f1; padding: 10px; border-radius: 4px;">
+                    <div style="font-size: 12px; color: #7f8c8d;">Monthly Payment (5th)</div>
+                    <div style="font-size: 18px; font-weight: bold; color: #2c3e50;">$50</div>
+                </div>
+                <div style="background: #3498db; color: white; padding: 10px; border-radius: 4px;">
+                    <div style="font-size: 12px; opacity: 0.9;">Full Month (4 weeks)</div>
+                    <div style="font-size: 18px; font-weight: bold;">$110 total</div>
+                </div>
+            </div>
+        </div>
+        
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>Original #</th>
+                    <th>Name</th>
+                    <th>Thursday Pool ($15)</th>
+                    <th>Monthly Payment ($50)</th>
+                    <th>Full Month ($110)</th>
+                    <th>Status</th>
+                    <th>Balance Info</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div id="summaryTab" class="tab-content">
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0;">Individual Summary</h2>
+                <div>
+                    <button onclick="sortSummaryTable('number')" style="padding: 6px 12px; margin-right: 5px;">Sort by #</button>
+                    <button onclick="sortSummaryTable('name')" style="padding: 6px 12px;">Sort by Name</button>
+                </div>
+            </div>
+        </div>
+        <div class="summary-table">
+            <div class="summary-row header">
+                <div>#</div>
+                <div>Name</div>
+                <div>Total Paid</div>
+                <div>Balance</div>
+                <div>Status</div>
+                <div>Payout Projection</div>
+            </div>
+            <div id="summaryTableBody"></div>
+        </div>
+    </div>
+
+    <div id="payoutsTab" class="tab-content">
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="margin-bottom: 15px;">Pool Payout History</h2>
+            <div id="payoutsContainer"></div>
+        </div>
+    </div>
+
+    <div id="transactionsTab" class="tab-content">
+        <div class="transaction-log">
+            <h2 style="margin-bottom: 20px;">📝 Transaction Log</h2>
+            <div id="transactionsList"></div>
+        </div>
+    </div>
+
+    <!-- Expenses Tab -->
+    <div id="expensesTab" class="tab-content">
+        <div class="expense-form">
+            <h3>🧾 Record New Expense</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Cash Box</label>
+                    <select id="expCashBox">
+                        <option value="beit-hob">Beit Hob</option>
+                        <option value="pool">Pool</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select id="expCurrency" onchange="updateExpenseAmountLabel()">
+                        <option value="USD">USD ($)</option>
+                        <option value="LBP">LBP (ل.ل)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="expAmountLabel">Amount (USD)</label>
+                    <input type="number" id="expAmount" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="expDate">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Description</label>
+                    <input type="text" id="expDescription" placeholder="What was this expense for?">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <button onclick="addExpense()" style="background:#e74c3c; color:white; border:none; padding:10px 22px; border-radius:4px; cursor:pointer; font-size:14px;">➕ Add Expense</button>
+                <span id="expEditNote" style="font-size:12px; color:#7f8c8d; display:none;">Editing entry — <a href="#" onclick="cancelExpenseEdit(); return false;">Cancel</a></span>
+            </div>
+        </div>
+
+        <div class="expense-list">
+            <div class="expense-list-header">
+                <h3>All Expenses</h3>
+                <div class="sort-controls">
+                    <span style="font-size:12px; color:#7f8c8d; align-self:center;">Sort:</span>
+                    <button id="expSortDate" class="active" onclick="setExpenseSort('date')">🕐 Date</button>
+                    <button id="expSortDesc" onclick="setExpenseSort('desc')">A-Z Desc</button>
+                    <button id="expSortAmount" onclick="setExpenseSort('amount')">💲 Amount</button>
+                    <button id="expSortBox" onclick="setExpenseSort('box')">📦 Cash Box</button>
+                </div>
+            </div>
+            <div class="expense-item-header">
+                <div>Date</div>
+                <div>Amount (USD)</div>
+                <div>Cash Box</div>
+                <div>Description</div>
+                <div>Original Amount</div>
+                <div>Actions</div>
+            </div>
+            <div id="expensesList"></div>
+        </div>
+    </div>
+
+    <!-- Investments Tab -->
+    <div id="investmentsTab" class="tab-content">
+        <div class="expense-form">
+            <h3>📈 Record New Investment</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select id="invCurrency" onchange="updateInvestmentAmountLabel()">
+                        <option value="USD">USD ($)</option>
+                        <option value="LBP">LBP (ل.ل)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="invAmountLabel">Amount (USD)</label>
+                    <input type="number" id="invAmount" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="invDate">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Description / Investment Name</label>
+                    <input type="text" id="invDescription" placeholder="Describe this investment...">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <button onclick="addInvestment()" style="background:#9b59b6; color:white; border:none; padding:10px 22px; border-radius:4px; cursor:pointer; font-size:14px;">➕ Add Investment</button>
+                <span id="invEditNote" style="font-size:12px; color:#7f8c8d; display:none;">Editing entry — <a href="#" onclick="cancelInvestmentEdit(); return false;">Cancel</a></span>
+            </div>
+        </div>
+
+        <div class="expense-list">
+            <div class="expense-list-header">
+                <h3>All Investments</h3>
+                <div class="sort-controls">
+                    <span style="font-size:12px; color:#7f8c8d; align-self:center;">Sort:</span>
+                    <button id="invSortDate" class="active" onclick="setInvestmentSort('date')">🕐 Date</button>
+                    <button id="invSortDesc" onclick="setInvestmentSort('desc')">A-Z Desc</button>
+                    <button id="invSortAmount" onclick="setInvestmentSort('amount')">💲 Amount</button>
+                </div>
+            </div>
+            <div class="expense-item-header" style="grid-template-columns: 140px 90px 1fr 130px 80px;">
+                <div>Date</div>
+                <div>Amount (USD)</div>
+                <div>Description</div>
+                <div>Original Amount</div>
+                <div>Actions</div>
+            </div>
+            <div id="investmentsList"></div>
+        </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settingsTab" class="tab-content">
+        <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 500px;">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">⚙️ Settings</h2>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #2c3e50; margin-bottom: 12px; font-size:16px;">💱 Exchange Rate</h3>
+                <p style="font-size: 13px; color: #7f8c8d; margin-bottom: 12px;">
+                    Set the USD to LBP exchange rate. This rate will be used for any new expense or investment entries made after saving. Existing entries keep their original rate.
+                </p>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <label style="font-weight:600; font-size:15px;">1 USD =</label>
+                    <input type="number" id="exchangeRateInput" min="1" step="0.5"
+                           style="width:130px; padding:9px; border:2px solid #3498db; border-radius:4px; font-size:16px; font-weight:bold;">
+                    <label style="font-weight:600; font-size:15px;">LBP</label>
+                    <button onclick="saveExchangeRate()" style="background:#27ae60; color:white; border:none; padding:10px 18px; border-radius:4px; cursor:pointer; font-size:14px;">💾 Save Rate</button>
+                </div>
+                <div id="rateSavedMsg" style="margin-top:8px; font-size:12px; color:#27ae60; display:none;">✓ Rate saved! New entries will use this rate.</div>
+            </div>
+
+            <hr style="border:none; border-top:1px solid #ecf0f1; margin: 20px 0;">
+
+            <div>
+                <h3 style="color: #2c3e50; margin-bottom: 12px; font-size:16px;">ℹ️ Current Rate</h3>
+                <p style="font-size:15px; font-weight:bold; color:#3498db;">1 USD = <span id="currentRateDisplay">89,500</span> LBP</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Entrants Modal -->
+    <div id="manageModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="closeModal('manageModal')">&times;</span>
+            <h2>Manage People</h2>
+            <p style="color: #7f8c8d; font-size: 13px; margin-bottom: 15px;">
+                Drag to reorder • Click name to edit • Click × to remove
+            </p>
+            <div id="entrantsList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button onclick="addNewEntrant()" style="margin-top: 15px;">➕ Add Person</button>
+            <button onclick="saveEntrantsAndClose()" style="margin-left: 10px; background: #27ae60;">✓ Save Changes</button>
+        </div>
+    </div>
+
+    <!-- WhatsApp Settings Modal -->
+    <div id="whatsappModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="closeModal('whatsappModal')">&times;</span>
+            <h2>📱 WhatsApp Settings</h2>
+            <p style="color: #7f8c8d; font-size: 13px; margin-bottom: 15px;">
+                Enter phone numbers with country code (e.g., +1234567890). Set default for wa.me links in phone settings to use regular WhatsApp.
+            </p>
+            <div id="whatsappList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button onclick="saveWhatsAppSettings()" style="margin-top: 15px; background: #27ae60;">✓ Save Numbers</button>
+        </div>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div id="editTransactionModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="closeModal('editTransactionModal')">&times;</span>
+            <h2>Edit Transaction</h2>
+            <div id="editTransactionContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Default entrant names - REPLACE THESE WITH YOUR ACTUAL NAMES
+        let entrants = [
+            "Person 1", "Person 2", "Person 3", "Person 4", "Person 5",
+            "Person 6", "Person 7", "Person 8", "Person 9", "Person 10",
+            "Person 11", "Person 12", "Person 13", "Person 14", "Person 15",
+            "Person 16", "Person 17", "Person 18", "Person 19", "Person 20"
+        ];
+
+        let weeks = [];
+        let currentWeekIndex = 0;
+        let poolRecipientIndex = 0;
+        let payouts = [];
+        let currentTab = 'payments';
+        let displayOrder = [];
+        let phoneNumbers = {};
+        let paymentHistory = [];
+        let payoutHistory = [];
+        let paymentsSortMode = 'number';
+        let summarySortMode = 'number';
+
+        // NEW: Expenses, Investments, Exchange Rate
+        let expenseEntries = [];       // {id, cashBox, currency, amount, amountUSD, description, date, timestamp, exchangeRate}
+        let investmentEntries = [];    // {id, currency, amount, amountUSD, description, date, timestamp, exchangeRate}
+        let exchangeRate = 89500;      // Default 1 USD = 89,500 LBP
+        let expenseSortMode = 'date';
+        let investmentSortMode = 'date';
+        let editingExpenseId = null;
+        let editingInvestmentId = null;
+
+        function init() {
+            loadData();
+            updateCurrentDate();
+            setInterval(updateCurrentDate, 60000);
+            
+            if (weeks.length === 0) {
+                addNewWeek();
+            }
+            populateWeekSelector();
+            renderTable();
+            updateSummary();
+            renderSummaryTab();
+            renderPayoutsTab();
+            renderTransactionLog();
+
+            // Initialize new tabs
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expDate').value = today;
+            document.getElementById('invDate').value = today;
+            document.getElementById('exchangeRateInput').value = exchangeRate;
+            document.getElementById('currentRateDisplay').textContent = exchangeRate.toLocaleString();
+            renderExpensesList();
+            renderInvestmentsList();
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('currentDate').textContent = now.toLocaleString('en-US', options);
+        }
+
+        function getTodayInfo() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const dayOfMonth = today.getDate();
+            
+            return {
+                date: today,
+                isThursday: dayOfWeek === 4,
+                isFifthOfMonth: dayOfMonth === 5,
+                dayOfWeek: dayOfWeek,
+                dayOfMonth: dayOfMonth
+            };
+        }
+
+        function getWhoOwesThisWeek() {
+            const todayInfo = getTodayInfo();
+            const owingList = [];
+            
+            entrants.forEach((name, index) => {
+                const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+                const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+                const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+                const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+                
+                const expectedThursday = (currentWeekIndex + 1) * 15;
+                const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+                const expectedMonthly = monthlyDueWeeks * 50;
+                const expectedTotal = expectedThursday + expectedMonthly;
+                
+                const balance = totalPaid - expectedTotal;
+                
+                if (balance < 0) {
+                    owingList.push({
+                        index: index,
+                        name: name,
+                        totalOwed: Math.abs(balance)
+                    });
+                }
+            });
+            
+            return owingList;
+        }
+
+        function notifyDuePayments() {
+            const owingList = getWhoOwesThisWeek();
+            
+            if (owingList.length === 0) {
+                alert('No one has payments due this week!');
+                return;
+            }
+            
+            let message = `Found ${owingList.length} people with payments due:\n\n`;
+            owingList.forEach(person => {
+                message += `${person.name}: $${person.totalOwed.toFixed(2)}\n`;
+            });
+            
+            message += '\nSend WhatsApp notifications?';
+            
+            if (!confirm(message)) return;
+            
+            let sent = 0;
+            owingList.forEach(person => {
+                if (!phoneNumbers[person.index]) {
+                    alert(`No phone number for ${person.name}. Skipping.`);
+                    return;
+                }
+                
+                const whatsappMessage = `Hi ${person.name}! 
+
+You currently have an outstanding balance of $${person.totalOwed.toFixed(2)}.
+
+Please make your payment when convenient. Thank you!`;
+                
+                const encodedMessage = encodeURIComponent(whatsappMessage);
+                const phone = phoneNumbers[person.index].replace(/[^0-9]/g, '');
+                const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+                
+                setTimeout(() => {
+                    window.open(whatsappUrl, '_blank');
+                }, sent * 1000);
+                
+                sent++;
+            });
+            
+            alert(`Opening WhatsApp for ${sent} notifications...`);
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            if (tabName === 'payments') {
+                document.getElementById('paymentsTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'block';
+            } else if (tabName === 'summary') {
+                document.getElementById('summaryTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                renderSummaryTab();
+            } else if (tabName === 'payouts') {
+                document.getElementById('payoutsTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                renderPayoutsTab();
+            } else if (tabName === 'transactions') {
+                document.getElementById('transactionsTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                renderTransactionLog();
+            } else if (tabName === 'expenses') {
+                document.getElementById('expensesTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                renderExpensesList();
+            } else if (tabName === 'investments') {
+                document.getElementById('investmentsTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                renderInvestmentsList();
+            } else if (tabName === 'settings') {
+                document.getElementById('settingsTab').classList.add('active');
+                document.querySelector('.controls').style.display = 'none';
+                document.getElementById('exchangeRateInput').value = exchangeRate;
+                document.getElementById('currentRateDisplay').textContent = exchangeRate.toLocaleString();
+            }
+        }
+
+        function addNewWeek() {
+            const weekDate = weeks.length === 0 ? new Date() : new Date(weeks[weeks.length - 1].date);
+            if (weeks.length > 0) {
+                weekDate.setDate(weekDate.getDate() + 7);
+            }
+            
+            weeks.push({
+                date: weekDate.toISOString().split('T')[0],
+                payments: entrants.map(() => ({
+                    thursday: 0,
+                    monthly: 0,
+                    fullMonth: 0
+                }))
+            });
+            
+            currentWeekIndex = weeks.length - 1;
+            populateWeekSelector();
+            renderTable();
+            updateSummary();
+            saveData();
+        }
+
+        function populateWeekSelector() {
+            const select = document.getElementById('weekSelect');
+            select.innerHTML = '';
+            weeks.forEach((week, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `Week of ${formatDate(week.date)}`;
+                select.appendChild(option);
+            });
+            select.value = currentWeekIndex;
+            select.onchange = (e) => {
+                currentWeekIndex = parseInt(e.target.value);
+                renderTable();
+                updateSummary();
+            };
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatDateMMDDYYYY(date) {
+            const d = new Date(date);
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        function isMonthlyPaymentDue(weekDate) {
+            const date = new Date(weekDate);
+            const dayOfMonth = date.getDate();
+            const weekEnd = new Date(date);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            return (dayOfMonth <= 5 && 5 <= weekEnd.getDate()) || 
+                   (date.getMonth() !== weekEnd.getMonth() && weekEnd.getDate() >= 5);
+        }
+
+        function sortPaymentsTable(mode) {
+            paymentsSortMode = mode;
+            renderTable();
+        }
+
+        function sortSummaryTable(mode) {
+            summarySortMode = mode;
+            renderSummaryTab();
+        }
+
+        function getNextPaymentInfo(index) {
+            const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+            const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+            const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+            const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+            
+            const expectedThursday = (currentWeekIndex + 1) * 15;
+            const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+            const expectedMonthly = monthlyDueWeeks * 50;
+            const expectedTotal = expectedThursday + expectedMonthly;
+            
+            const balance = totalPaid - expectedTotal;
+            
+            let nextPaymentDate = new Date(weeks[currentWeekIndex].date);
+            let nextPaymentAmount = 0;
+            
+            if (balance >= 0) {
+                let remainingBalance = balance;
+                let weeksCovered = currentWeekIndex + 1;
+                
+                for (let i = currentWeekIndex + 1; i < currentWeekIndex + 52; i++) {
+                    const futureWeekDate = new Date(weeks[currentWeekIndex].date);
+                    futureWeekDate.setDate(futureWeekDate.getDate() + (7 * (i - currentWeekIndex)));
+                    
+                    let weekCost = 15;
+                    if (isMonthlyPaymentDue(futureWeekDate.toISOString().split('T')[0])) {
+                        weekCost += 50;
+                    }
+                    
+                    if (remainingBalance >= weekCost) {
+                        remainingBalance -= weekCost;
+                        weeksCovered = i + 1;
+                    } else {
+                        nextPaymentDate = futureWeekDate;
+                        nextPaymentAmount = weekCost - remainingBalance;
+                        break;
+                    }
+                }
+                
+                if (weeksCovered >= currentWeekIndex + 52) {
+                    nextPaymentDate.setDate(nextPaymentDate.getDate() + (7 * 52));
+                    nextPaymentAmount = 15;
+                }
+            } else {
+                nextPaymentDate = new Date(weeks[currentWeekIndex].date);
+                const currentDay = nextPaymentDate.getDay();
+                const daysToThursday = (4 - currentDay + 7) % 7;
+                nextPaymentDate.setDate(nextPaymentDate.getDate() + daysToThursday);
+                nextPaymentAmount = Math.abs(balance);
+            }
+            
+            return {
+                date: nextPaymentDate,
+                amount: nextPaymentAmount,
+                isOwed: balance < 0
+            };
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            const currentWeek = weeks[currentWeekIndex];
+            const monthlyDue = isMonthlyPaymentDue(currentWeek.date);
+
+            displayOrder = entrants.map((name, idx) => ({ name, originalIndex: idx }));
+            if (paymentsSortMode === 'name') {
+                displayOrder.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            displayOrder.forEach(({ name, originalIndex }) => {
+                const index = originalIndex;
+                const payment = currentWeek.payments[index];
+                const row = document.createElement('tr');
+                
+                const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+                const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+                const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+                const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+                
+                const expectedThursday = (currentWeekIndex + 1) * 15;
+                const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+                const expectedMonthly = monthlyDueWeeks * 50;
+                const expectedTotal = expectedThursday + expectedMonthly;
+                
+                const totalBalance = totalPaid - expectedTotal;
+                const nextPayment = getNextPaymentInfo(index);
+                
+                let status = '';
+                let statusClass = '';
+                if (totalBalance >= 0) {
+                    const nextDateStr = nextPayment.date.toLocaleDateString('en-GB', { 
+                        day: '2-digit', 
+                        month: 'short'
+                    });
+                    status = `COVERED → ${nextDateStr}`;
+                    statusClass = 'paid';
+                } else if (totalBalance < 0 && totalPaid > 0) {
+                    status = 'PARTIAL';
+                    statusClass = 'partial';
+                } else {
+                    status = 'UNPAID';
+                    statusClass = 'unpaid';
+                }
+                
+                if (index === poolRecipientIndex % entrants.length) {
+                    row.classList.add('next-recipient');
+                }
+                
+                row.innerHTML = `
+                    <td><strong>${index + 1}</strong></td>
+                    <td><strong>${name}</strong></td>
+                    <td>
+                        <input type="number" 
+                               value="${payment.thursday || 0}" 
+                               onchange="updatePayment(${index}, 'thursday', this.value)"
+                               min="0" step="0.01">
+                    </td>
+                    <td>
+                        <input type="number" 
+                               value="${payment.monthly || 0}" 
+                               onchange="updatePayment(${index}, 'monthly', this.value)"
+                               min="0" step="0.01"
+                               ${!monthlyDue ? 'style="background: #ecf0f1;"' : ''}>
+                        ${!monthlyDue ? '<div style="font-size: 11px; color: #7f8c8d;">Not due this week</div>' : ''}
+                    </td>
+                    <td>
+                        <input type="number" 
+                               value="${payment.fullMonth || 0}" 
+                               onchange="updatePayment(${index}, 'fullMonth', this.value)"
+                               min="0" step="0.01"
+                               placeholder="110.00">
+                        <div style="font-size: 11px; color: #7f8c8d; margin-top: 3px;">Covers 4 weeks + monthly</div>
+                    </td>
+                    <td><span class="status ${statusClass}">${status}</span></td>
+                    <td>
+                        ${totalBalance < 0 ? `
+                            <div class="debt-info">Owes: $${Math.abs(totalBalance).toFixed(2)}</div>
+                            <div style="font-size: 11px; color: #e74c3c; margin-top: 3px;">
+                                Due now: $${nextPayment.amount.toFixed(2)}
+                            </div>
+                        ` : ''}
+                        ${totalBalance >= 0 ? `
+                            <div style="color: #27ae60; font-weight: bold; font-size: 12px;">✓ Covered</div>
+                            <div style="font-size: 11px; color: #7f8c8d; margin-top: 3px;">
+                                Next: $${nextPayment.amount.toFixed(2)} on ${nextPayment.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                            </div>
+                        ` : ''}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function updatePayment(index, type, value) {
+            const amount = parseFloat(value) || 0;
+            const oldAmount = weeks[currentWeekIndex].payments[index][type] || 0;
+            weeks[currentWeekIndex].payments[index][type] = amount;
+            
+            if (amount > oldAmount) {
+                const increase = amount - oldAmount;
+                
+                paymentHistory.push({
+                    id: Date.now() + Math.random(),
+                    entrantIndex: index,
+                    entrantName: entrants[index],
+                    amount: increase,
+                    type: type,
+                    direction: 'received',
+                    weekDate: weeks[currentWeekIndex].date,
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (phoneNumbers[index]) {
+                    if (confirm(`Payment of $${increase.toFixed(2)} recorded for ${entrants[index]}. Send WhatsApp notification?`)) {
+                        sendWhatsAppNotification(index, increase);
+                    }
+                }
+            }
+            
+            renderTable();
+            updateSummary();
+            renderTransactionLog();
+            saveData();
+        }
+
+        function updateSummary() {
+            let investmentTotal = 0;
+            let beitHobTotal = 0;
+            let poolTotal = 0;
+            
+            weeks.forEach(week => {
+                week.payments.forEach(payment => {
+                    investmentTotal += (payment.monthly || 0) * (35/50);
+                    beitHobTotal += (payment.monthly || 0) * (15/50);
+                    poolTotal += (payment.thursday || 0);
+                    
+                    const fullMonthAmount = payment.fullMonth || 0;
+                    if (fullMonthAmount > 0) {
+                        const toBeitHobAndInvestment = Math.min(fullMonthAmount, 50);
+                        investmentTotal += toBeitHobAndInvestment * (35/50);
+                        beitHobTotal += toBeitHobAndInvestment * (15/50);
+                        
+                        if (fullMonthAmount > 50) {
+                            poolTotal += fullMonthAmount - 50;
+                        }
+                    }
+                });
+            });
+
+            // Subtract expenses from each cash box (NET totals)
+            expenseEntries.forEach(exp => {
+                if (exp.cashBox === 'beit-hob') beitHobTotal -= exp.amountUSD;
+                else if (exp.cashBox === 'pool') poolTotal -= exp.amountUSD;
+            });
+            investmentEntries.forEach(inv => {
+                investmentTotal -= inv.amountUSD;
+            });
+
+            // Subtract pool payouts from pool cash box
+            payoutHistory.forEach(p => {
+                poolTotal -= p.amount;
+            });
+            
+            document.getElementById('investmentTotal').textContent = `$${investmentTotal.toFixed(2)}`;
+            document.getElementById('beitHobTotal').textContent = `$${beitHobTotal.toFixed(2)}`;
+            
+            const nextRecipient = entrants[poolRecipientIndex % entrants.length];
+            document.getElementById('nextRecipient').textContent = nextRecipient;
+            
+            let totalDebt = 0;
+            entrants.forEach((_, index) => {
+                const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+                const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+                const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+                const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+                
+                const expectedThursday = (currentWeekIndex + 1) * 15;
+                const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+                const expectedMonthly = monthlyDueWeeks * 50;
+                const expectedTotal = expectedThursday + expectedMonthly;
+                
+                const balance = totalPaid - expectedTotal;
+                if (balance < 0) {
+                    totalDebt += Math.abs(balance);
+                }
+            });
+            
+            document.getElementById('totalDebt').textContent = `$${totalDebt.toFixed(2)}`;
+        }
+
+        function renderSummaryTab() {
+            const container = document.getElementById('summaryTableBody');
+            container.innerHTML = '';
+            
+            let summaryOrder = entrants.map((name, idx) => ({ name, originalIndex: idx }));
+            if (summarySortMode === 'name') {
+                summaryOrder.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            summaryOrder.forEach(({ name, originalIndex }) => {
+                const index = originalIndex;
+                const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+                const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+                const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+                const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+                
+                const expectedThursday = (currentWeekIndex + 1) * 15;
+                const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+                const expectedMonthly = monthlyDueWeeks * 50;
+                const expectedTotal = expectedThursday + expectedMonthly;
+                
+                const balance = totalPaid - expectedTotal;
+                const nextPayment = getNextPaymentInfo(index);
+                
+                let statusText = '';
+                let statusColor = '';
+                
+                if (balance >= 0) {
+                    const nextDateStr = nextPayment.date.toLocaleDateString('en-GB', { 
+                        day: '2-digit', 
+                        month: 'short', 
+                        year: 'numeric' 
+                    });
+                    statusText = `Covered until ${nextDateStr}`;
+                    statusColor = '#27ae60';
+                } else {
+                    statusText = 'Owes';
+                    statusColor = '#e74c3c';
+                }
+                
+                const position = (index - poolRecipientIndex + entrants.length) % entrants.length;
+                let payoutDate = new Date();
+                
+                const dayOfWeek = payoutDate.getDay();
+                const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+                if (daysUntilFriday === 0 && payoutDate.getHours() >= 12) {
+                    payoutDate.setDate(payoutDate.getDate() + 7);
+                } else {
+                    payoutDate.setDate(payoutDate.getDate() + daysUntilFriday);
+                }
+                
+                payoutDate.setDate(payoutDate.getDate() + (position * 7));
+                
+                const payoutDateStr = payoutDate.toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                
+                let projection = '';
+                if (position === 0) {
+                    projection = `🎯 ${payoutDateStr}`;
+                } else {
+                    projection = payoutDateStr;
+                }
+                
+                const row = document.createElement('div');
+                row.className = 'summary-row';
+                row.innerHTML = `
+                    <div><strong>${index + 1}</strong></div>
+                    <div><strong>${name}</strong></div>
+                    <div>$${totalPaid.toFixed(2)}</div>
+                    <div style="color: ${statusColor}; font-weight: bold;">
+                        ${balance >= 0 ? '+' : ''}$${balance.toFixed(2)}
+                    </div>
+                    <div>
+                        <span class="status ${balance >= 0 ? 'paid' : 'unpaid'}" style="background: ${statusColor};">
+                            ${statusText}
+                        </span>
+                        <div style="font-size: 11px; color: #7f8c8d; margin-top: 5px;">
+                            Next: $${nextPayment.amount.toFixed(2)} due ${nextPayment.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                        </div>
+                    </div>
+                    <div class="projection">${projection}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderPayoutsTab() {
+            const container = document.getElementById('payoutsContainer');
+            container.innerHTML = '';
+            
+            const totalRounds = Math.max(1, Math.ceil(payouts.length / entrants.length) + 1);
+            
+            for (let round = 0; round < totalRounds; round++) {
+                entrants.forEach((name, index) => {
+                    const payoutIndex = round * entrants.length + index;
+                    const existingPayout = payouts[payoutIndex];
+                    
+                    const card = document.createElement('div');
+                    card.className = `payout-card ${existingPayout?.paid ? 'paid' : 'pending'}`;
+                    
+                    const isNext = payoutIndex === poolRecipientIndex;
+                    
+                    card.innerHTML = `
+                        <div class="payout-header">
+                            <div>
+                                <div class="payout-name">${name}</div>
+                                <div style="font-size: 12px; color: #7f8c8d; margin-top: 5px;">
+                                    Round ${round + 1} • Position ${index + 1}
+                                </div>
+                            </div>
+                            <span class="payout-status ${existingPayout?.paid ? 'paid' : 'pending'}">
+                                ${existingPayout?.paid ? '✓ PAID' : isNext ? '⭐ NEXT' : 'PENDING'}
+                            </span>
+                        </div>
+                        <div class="payout-details">
+                            <div class="payout-detail">
+                                <label>Amount Paid</label>
+                                <input type="number" 
+                                       id="amount_${payoutIndex}" 
+                                       value="${existingPayout?.amount || ''}" 
+                                       placeholder="300.00"
+                                       ${!isNext && !existingPayout?.paid ? 'disabled' : ''}>
+                            </div>
+                            <div class="payout-detail">
+                                <label>Date Paid</label>
+                                <input type="date" 
+                                       id="date_${payoutIndex}" 
+                                       value="${existingPayout?.date || ''}"
+                                       ${!isNext && !existingPayout?.paid ? 'disabled' : ''}>
+                            </div>
+                            <div class="payout-detail">
+                                <label>Notes</label>
+                                <input type="text" 
+                                       id="notes_${payoutIndex}" 
+                                       value="${existingPayout?.notes || ''}" 
+                                       placeholder="Optional notes"
+                                       ${!isNext && !existingPayout?.paid ? 'disabled' : ''}>
+                            </div>
+                        </div>
+                        ${isNext || existingPayout?.paid ? `
+                            <div class="payout-actions">
+                                ${!existingPayout?.paid ? `
+                                    <button onclick="markPayoutAsPaid(${payoutIndex}, ${index})" 
+                                            style="background: #27ae60;">
+                                        ✓ Mark as Paid
+                                    </button>
+                                ` : `
+                                    <button onclick="updatePayout(${payoutIndex}, ${index})" 
+                                            style="background: #3498db;">
+                                        💾 Update
+                                    </button>
+                                    <button onclick="deletePayout(${payoutIndex})" 
+                                            style="background: #e74c3c;">
+                                        🗑️ Delete
+                                    </button>
+                                `}
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    container.appendChild(card);
+                    
+                    if (!existingPayout?.paid && payoutIndex > poolRecipientIndex) {
+                        return;
+                    }
+                });
+            }
+        }
+
+        function markPayoutAsPaid(payoutIndex, recipientIndex) {
+            const amount = parseFloat(document.getElementById(`amount_${payoutIndex}`).value);
+            const date = document.getElementById(`date_${payoutIndex}`).value;
+            const notes = document.getElementById(`notes_${payoutIndex}`).value;
+            
+            if (!amount || !date) {
+                alert('Please enter both amount and date');
+                return;
+            }
+            
+            payouts[payoutIndex] = {
+                recipientIndex: recipientIndex,
+                recipientName: entrants[recipientIndex],
+                amount: amount,
+                date: date,
+                notes: notes,
+                paid: true
+            };
+            
+            payoutHistory.push({
+                id: Date.now() + Math.random(),
+                recipientIndex: recipientIndex,
+                recipientName: entrants[recipientIndex],
+                amount: amount,
+                direction: 'paid',
+                date: date,
+                timestamp: new Date().toISOString(),
+                notes: notes
+            });
+            
+            poolRecipientIndex++;
+            
+            saveData();
+            updateSummary();
+            renderPayoutsTab();
+            renderSummaryTab();
+            renderTransactionLog();
+            
+            alert(`Payout of $${amount} to ${entrants[recipientIndex]} recorded!`);
+
+            // Send WhatsApp notification to payout recipient
+            const phone = phoneNumbers[recipientIndex];
+            if (phone) {
+                if (confirm(`Send WhatsApp notification to ${entrants[recipientIndex]} about their $${amount} payout?`)) {
+                    const name = entrants[recipientIndex];
+                    const formattedDate = new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const message = `Hi ${name}! 🎉\n\nGreat news — your pool payout of $${parseFloat(amount).toFixed(2)} has been processed on ${formattedDate}.\n\n${notes ? 'Note: ' + notes + '\n\n' : ''}Thank you for being part of the pool!`;
+                    const encodedMessage = encodeURIComponent(message);
+                    const cleanPhone = phone.replace(/[^0-9]/g, '');
+                    window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
+                }
+            }
+        }
+
+        function updatePayout(payoutIndex, recipientIndex) {
+            const amount = parseFloat(document.getElementById(`amount_${payoutIndex}`).value);
+            const date = document.getElementById(`date_${payoutIndex}`).value;
+            const notes = document.getElementById(`notes_${payoutIndex}`).value;
+            
+            if (!amount || !date) {
+                alert('Please enter both amount and date');
+                return;
+            }
+            
+            payouts[payoutIndex] = {
+                recipientIndex: recipientIndex,
+                recipientName: entrants[recipientIndex],
+                amount: amount,
+                date: date,
+                notes: notes,
+                paid: true
+            };
+            
+            saveData();
+            renderPayoutsTab();
+            renderTransactionLog();
+            
+            alert('Payout updated!');
+        }
+
+        function deletePayout(payoutIndex) {
+            if (!confirm('Are you sure you want to delete this payout record?')) {
+                return;
+            }
+            
+            payouts.splice(payoutIndex, 1);
+            poolRecipientIndex = payouts.filter(p => p.paid).length;
+            
+            saveData();
+            updateSummary();
+            renderPayoutsTab();
+            renderSummaryTab();
+            renderTransactionLog();
+        }
+
+        function renderTransactionLog() {
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = '';
+            
+            const allTransactions = [
+                ...paymentHistory.map(p => ({
+                    ...p,
+                    displayType: p.type === 'thursday' ? 'Thursday Pool' : 
+                                 p.type === 'monthly' ? 'Monthly Payment' : 'Full Month',
+                    direction: 'received'
+                })),
+                ...payoutHistory.map(p => ({
+                    ...p,
+                    displayType: 'Pool Payout',
+                    entrantName: p.recipientName,
+                    direction: 'paid'
+                }))
+            ];
+            
+            allTransactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            if (allTransactions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">No transactions yet</p>';
+                return;
+            }
+            
+            allTransactions.forEach(transaction => {
+                const div = document.createElement('div');
+                div.className = `transaction-item ${transaction.direction}`;
+                
+                const timestamp = new Date(transaction.timestamp).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                div.innerHTML = `
+                    <div class="transaction-date">${timestamp}</div>
+                    <div>
+                        <span class="transaction-type">${transaction.displayType}</span>
+                    </div>
+                    <div>
+                        <strong>${transaction.direction === 'received' ? 'From' : 'To'}:</strong> ${transaction.entrantName}
+                        ${transaction.notes ? `<br><small style="color: #7f8c8d;">${transaction.notes}</small>` : ''}
+                    </div>
+                    <div class="transaction-amount ${transaction.direction === 'received' ? 'positive' : 'negative'}">
+                        ${transaction.direction === 'received' ? '+' : '-'}$${transaction.amount.toFixed(2)}
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; color: #7f8c8d;">
+                            ${transaction.direction === 'received' ? '📥 Received' : '📤 Paid Out'}
+                        </span>
+                    </div>
+                    <div class="transaction-actions">
+                        <button class="edit" onclick="editTransaction('${transaction.id}')">✏️</button>
+                        <button class="delete" onclick="deleteTransaction('${transaction.id}')">🗑️</button>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function editTransaction(id) {
+            const transaction = [...paymentHistory, ...payoutHistory].find(t => t.id === id);
+            if (!transaction) return;
+            
+            const content = document.getElementById('editTransactionContent');
+            content.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Amount</label>
+                    <input type="number" id="editAmount" value="${transaction.amount}" step="0.01" 
+                           style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Date/Time</label>
+                    <input type="datetime-local" id="editTimestamp" 
+                           value="${new Date(transaction.timestamp).toISOString().slice(0,16)}"
+                           style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                ${transaction.notes !== undefined ? `
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Notes</label>
+                    <input type="text" id="editNotes" value="${transaction.notes || ''}"
+                           style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                ` : ''}
+                <button onclick="saveTransactionEdit('${id}')" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Save Changes
+                </button>
+            `;
+            
+            document.getElementById('editTransactionModal').style.display = 'block';
+        }
+
+        function saveTransactionEdit(id) {
+            const newAmount = parseFloat(document.getElementById('editAmount').value);
+            const newTimestamp = new Date(document.getElementById('editTimestamp').value).toISOString();
+            const notesInput = document.getElementById('editNotes');
+            const newNotes = notesInput ? notesInput.value : undefined;
+            
+            let transaction = paymentHistory.find(t => t.id === id);
+            if (transaction) {
+                transaction.amount = newAmount;
+                transaction.timestamp = newTimestamp;
+            } else {
+                transaction = payoutHistory.find(t => t.id === id);
+                if (transaction) {
+                    transaction.amount = newAmount;
+                    transaction.timestamp = newTimestamp;
+                    if (newNotes !== undefined) transaction.notes = newNotes;
+                }
+            }
+            
+            saveData();
+            renderTransactionLog();
+            closeModal('editTransactionModal');
+        }
+
+        function deleteTransaction(id) {
+            if (!confirm('Are you sure you want to delete this transaction?')) return;
+            
+            paymentHistory = paymentHistory.filter(t => t.id !== id);
+            payoutHistory = payoutHistory.filter(t => t.id !== id);
+            
+            saveData();
+            renderTransactionLog();
+        }
+
+        function exportTransactionsToExcel() {
+            const allTransactions = [
+                ...paymentHistory.map(p => ({
+                    ...p,
+                    displayType: p.type === 'thursday' ? 'Thursday Pool' : 
+                                 p.type === 'monthly' ? 'Monthly Payment' : 'Full Month',
+                    direction: 'received'
+                })),
+                ...payoutHistory.map(p => ({
+                    ...p,
+                    displayType: 'Pool Payout',
+                    entrantName: p.recipientName,
+                    direction: 'paid'
+                }))
+            ];
+            
+            allTransactions.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            
+            const data = allTransactions.map(t => ({
+                'Date': formatDateMMDDYYYY(t.timestamp),
+                'Time': new Date(t.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                'Type': t.displayType,
+                'Direction': t.direction === 'received' ? 'Received' : 'Paid Out',
+                'Person': t.entrantName,
+                'Amount': t.amount,
+                'Notes': t.notes || ''
+            }));
+            
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(data);
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+            
+            XLSX.writeFile(wb, `transactions_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function exportToExcel() {
+            let investmentTotal = 0;
+            let beitHobTotal = 0;
+            let poolTotal = 0;
+            
+            weeks.forEach(week => {
+                week.payments.forEach(payment => {
+                    investmentTotal += (payment.monthly || 0) * (35/50);
+                    beitHobTotal += (payment.monthly || 0) * (15/50);
+                    poolTotal += (payment.thursday || 0);
+                    
+                    const fullMonthAmount = payment.fullMonth || 0;
+                    if (fullMonthAmount > 0) {
+                        const toBeitHobAndInvestment = Math.min(fullMonthAmount, 50);
+                        investmentTotal += toBeitHobAndInvestment * (35/50);
+                        beitHobTotal += toBeitHobAndInvestment * (15/50);
+                        if (fullMonthAmount > 50) {
+                            poolTotal += fullMonthAmount - 50;
+                        }
+                    }
+                });
+            });
+
+            // Gross collected values
+            const investmentGross = investmentTotal;
+            const beitHobGross = beitHobTotal;
+            const poolGross = poolTotal;
+
+            // Expenses deducted per box
+            let investmentExpenses = 0, beitHobExpenses = 0, poolExpenses = 0;
+            expenseEntries.forEach(exp => {
+                if (exp.cashBox === 'beit-hob') beitHobExpenses += exp.amountUSD;
+                else if (exp.cashBox === 'pool') poolExpenses += exp.amountUSD;
+            });
+            investmentEntries.forEach(inv => { investmentExpenses += inv.amountUSD; });
+
+            // Pool payouts deducted from pool
+            const poolPayoutsTotal = payoutHistory.reduce((s, p) => s + p.amount, 0);
+            poolExpenses += poolPayoutsTotal;
+
+            // Net values
+            const investmentNet = investmentGross - investmentExpenses;
+            const beitHobNet = beitHobGross - beitHobExpenses;
+            const poolNet = poolGross - poolExpenses;
+            
+            // Summary sheet
+            const summaryData = [
+                ['MONEY POOL SUMMARY'],
+                ['Export Date', new Date().toLocaleString()],
+                [],
+                ['CASH BOXES (NET)'],
+                ['', 'Gross Collected', 'Expenses/Payouts', 'NET Balance'],
+                ['Investment Cash Box', investmentGross, investmentExpenses, investmentNet],
+                ['Beit Hob Cash Box', beitHobGross, beitHobExpenses, beitHobNet],
+                ['Pool Cash Box', poolGross, poolExpenses, poolNet],
+                [],
+                ['INDIVIDUAL SUMMARY']
+            ];
+            
+            const individualData = entrants.map((name, index) => {
+                const totalThursday = weeks.reduce((sum, week) => sum + (week.payments[index].thursday || 0), 0);
+                const totalMonthly = weeks.reduce((sum, week) => sum + (week.payments[index].monthly || 0), 0);
+                const totalFullMonth = weeks.reduce((sum, week) => sum + (week.payments[index].fullMonth || 0), 0);
+                const totalPaid = totalThursday + totalMonthly + totalFullMonth;
+                
+                const expectedThursday = (currentWeekIndex + 1) * 15;
+                const monthlyDueWeeks = weeks.slice(0, currentWeekIndex + 1).filter(w => isMonthlyPaymentDue(w.date)).length;
+                const expectedMonthly = monthlyDueWeeks * 50;
+                const expectedTotal = expectedThursday + expectedMonthly;
+                
+                const balance = totalPaid - expectedTotal;
+                const nextPayment = getNextPaymentInfo(index);
+                
+                return {
+                    '#': index + 1,
+                    'Name': name,
+                    'Total Paid': totalPaid,
+                    'Balance': balance,
+                    'Next Payment Date': formatDateMMDDYYYY(nextPayment.date),
+                    'Next Payment Amount': nextPayment.amount
+                };
+            });
+            
+            // Payment History
+            const paymentsData = paymentHistory.map(p => ({
+                'Date': formatDateMMDDYYYY(p.timestamp),
+                'Time': new Date(p.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                'Name': p.entrantName,
+                'Type': p.type === 'thursday' ? 'Thursday Pool' : p.type === 'monthly' ? 'Monthly Payment' : 'Full Month',
+                'Amount': p.amount,
+                'Week Date': p.weekDate
+            }));
+            
+            // Payout History
+            const payoutsData = payoutHistory.map(p => ({
+                'Date': formatDateMMDDYYYY(p.timestamp),
+                'Time': new Date(p.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                'Recipient': p.recipientName,
+                'Amount': p.amount,
+                'Notes': p.notes || ''
+            }));
+            
+            const wb = XLSX.utils.book_new();
+            
+            // Summary sheet
+            const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.sheet_add_json(ws1, individualData, { origin: -1 });
+            XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+            
+            // Payments sheet
+            if (paymentsData.length > 0) {
+                const ws2 = XLSX.utils.json_to_sheet(paymentsData);
+                XLSX.utils.book_append_sheet(wb, ws2, 'Payments Received');
+            }
+            
+            // Payouts sheet
+            if (payoutsData.length > 0) {
+                const ws3 = XLSX.utils.json_to_sheet(payoutsData);
+                XLSX.utils.book_append_sheet(wb, ws3, 'Payouts Made');
+            }
+
+            // Beit Hob Expenses sheet
+            if (expenseEntries.length > 0) {
+                const expData = expenseEntries.map(e => ({
+                    'Date': e.date,
+                    'Cash Box': e.cashBox === 'beit-hob' ? 'Beit Hob' : 'Pool',
+                    'Amount (USD)': e.amountUSD,
+                    'Original Amount': e.currency === 'LBP' ? `${e.amount.toLocaleString()} LBP` : `$${e.amount}`,
+                    'Currency': e.currency,
+                    'Exchange Rate Used': e.currency === 'LBP' ? e.exchangeRate : 'N/A',
+                    'Description': e.description,
+                    'Recorded At': new Date(e.timestamp).toLocaleString()
+                }));
+                const ws4 = XLSX.utils.json_to_sheet(expData);
+                XLSX.utils.book_append_sheet(wb, ws4, 'Expenses');
+            }
+
+            // Investments sheet
+            if (investmentEntries.length > 0) {
+                const invData = investmentEntries.map(e => ({
+                    'Date': e.date,
+                    'Amount (USD)': e.amountUSD,
+                    'Original Amount': e.currency === 'LBP' ? `${e.amount.toLocaleString()} LBP` : `$${e.amount}`,
+                    'Currency': e.currency,
+                    'Exchange Rate Used': e.currency === 'LBP' ? e.exchangeRate : 'N/A',
+                    'Description': e.description,
+                    'Recorded At': new Date(e.timestamp).toLocaleString()
+                }));
+                const ws5 = XLSX.utils.json_to_sheet(invData);
+                XLSX.utils.book_append_sheet(wb, ws5, 'Investments');
+            }
+            
+            XLSX.writeFile(wb, `money_pool_report_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function saveData() {
+            const data = {
+                entrants,
+                weeks,
+                currentWeekIndex,
+                poolRecipientIndex,
+                payouts,
+                phoneNumbers,
+                paymentHistory,
+                payoutHistory,
+                expenseEntries,
+                investmentEntries,
+                exchangeRate
+            };
+            localStorage.setItem('moneyPoolData', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('moneyPoolData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                entrants = data.entrants || entrants;
+                weeks = data.weeks || [];
+                currentWeekIndex = data.currentWeekIndex || 0;
+                poolRecipientIndex = data.poolRecipientIndex || 0;
+                payouts = data.payouts || [];
+                phoneNumbers = data.phoneNumbers || {};
+                paymentHistory = data.paymentHistory || [];
+                payoutHistory = data.payoutHistory || [];
+                expenseEntries = data.expenseEntries || [];
+                investmentEntries = data.investmentEntries || [];
+                exchangeRate = data.exchangeRate || 89500;
+            }
+        }
+
+        function exportToFile() {
+            const data = {
+                entrants,
+                weeks,
+                currentWeekIndex,
+                poolRecipientIndex,
+                payouts,
+                phoneNumbers,
+                paymentHistory,
+                payoutHistory,
+                expenseEntries,
+                investmentEntries,
+                exchangeRate,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `money_pool_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported successfully!');
+        }
+
+        function importFromFile() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    entrants = data.entrants;
+                    weeks = data.weeks;
+                    currentWeekIndex = data.currentWeekIndex;
+                    poolRecipientIndex = data.poolRecipientIndex;
+                    payouts = data.payouts || [];
+                    phoneNumbers = data.phoneNumbers || {};
+                    paymentHistory = data.paymentHistory || [];
+                    payoutHistory = data.payoutHistory || [];
+                    expenseEntries = data.expenseEntries || [];
+                    investmentEntries = data.investmentEntries || [];
+                    exchangeRate = data.exchangeRate || 89500;
+                    
+                    populateWeekSelector();
+                    renderTable();
+                    updateSummary();
+                    renderSummaryTab();
+                    renderPayoutsTab();
+                    renderTransactionLog();
+                    saveData();
+                    
+                    alert('Data imported successfully!');
+                } catch (error) {
+                    alert('Error importing file. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+            
+            event.target.value = '';
+        }
+
+        function showWhatsAppSettings() {
+            const container = document.getElementById('whatsappList');
+            container.innerHTML = '';
+            
+            entrants.forEach((name, index) => {
+                const div = document.createElement('div');
+                div.style.cssText = 'background: #f8f9fa; padding: 12px; margin-bottom: 8px; border-radius: 4px; display: flex; align-items: center; gap: 10px;';
+                div.innerHTML = `
+                    <div style="flex: 0 0 40px; font-weight: bold;">${index + 1}</div>
+                    <div style="flex: 1; font-weight: bold;">${name}</div>
+                    <input type="tel" 
+                           id="phone_${index}" 
+                           value="${phoneNumbers[index] || ''}" 
+                           placeholder="+1234567890"
+                           style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 3px;">
+                `;
+                container.appendChild(div);
+            });
+            
+            document.getElementById('whatsappModal').style.display = 'block';
+        }
+
+        function saveWhatsAppSettings() {
+            entrants.forEach((_, index) => {
+                const phone = document.getElementById(`phone_${index}`).value.trim();
+                if (phone) {
+                    phoneNumbers[index] = phone;
+                } else {
+                    delete phoneNumbers[index];
+                }
+            });
+            
+            saveData();
+            closeModal('whatsappModal');
+            alert('WhatsApp numbers saved!');
+        }
+
+        function sendWhatsAppNotification(entrantIndex, amount) {
+            const phone = phoneNumbers[entrantIndex];
+            if (!phone) {
+                alert('No phone number set for this person. Go to WhatsApp Settings to add it.');
+                return;
+            }
+            
+            const name = entrants[entrantIndex];
+            const message = `Hi ${name}! Your payment of $${amount.toFixed(2)} has been recorded. Thank you!`;
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function showManageEntrants() {
+            tempEntrants = [...entrants];
+            renderEntrantsList();
+            document.getElementById('manageModal').style.display = 'block';
+        }
+
+        let tempEntrants = [];
+        let draggedIndex = null;
+
+        function renderEntrantsList() {
+            const container = document.getElementById('entrantsList');
+            container.innerHTML = '';
+            
+            tempEntrants.forEach((name, index) => {
+                const div = document.createElement('div');
+                div.className = 'entrant-item';
+                div.draggable = true;
+                div.dataset.index = index;
+                
+                div.innerHTML = `
+                    <span class="drag-handle">☰</span>
+                    <span class="entrant-number">${index + 1}</span>
+                    <input type="text" 
+                           class="entrant-name-input" 
+                           value="${name}"
+                           onchange="updateTempEntrantName(${index}, this.value)"
+                           placeholder="Enter name">
+                    <button class="remove-entrant" onclick="removeEntrant(${index})">×</button>
+                `;
+                
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('drop', handleDrop);
+                div.addEventListener('dragend', handleDragEnd);
+                div.addEventListener('dragenter', handleDragEnter);
+                div.addEventListener('dragleave', handleDragLeave);
+                
+                container.appendChild(div);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedIndex = parseInt(e.target.dataset.index);
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            const item = e.target.closest('.entrant-item');
+            if (item && item.dataset.index !== draggedIndex.toString()) {
+                item.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const item = e.target.closest('.entrant-item');
+            if (item) {
+                item.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            const dropTarget = e.target.closest('.entrant-item');
+            if (!dropTarget) return false;
+            
+            const dropIndex = parseInt(dropTarget.dataset.index);
+            
+            if (draggedIndex !== dropIndex) {
+                const draggedItem = tempEntrants[draggedIndex];
+                tempEntrants.splice(draggedIndex, 1);
+                tempEntrants.splice(dropIndex, 0, draggedItem);
+                
+                renderEntrantsList();
+            }
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.entrant-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function updateTempEntrantName(index, newName) {
+            tempEntrants[index] = newName || `Person ${index + 1}`;
+        }
+
+        function addNewEntrant() {
+            tempEntrants.push(`Person ${tempEntrants.length + 1}`);
+            renderEntrantsList();
+        }
+
+        function removeEntrant(index) {
+            if (tempEntrants.length <= 1) {
+                alert('You must have at least one person in the pool!');
+                return;
+            }
+            
+            if (confirm(`Remove ${tempEntrants[index]}? This will delete all their payment history.`)) {
+                tempEntrants.splice(index, 1);
+                renderEntrantsList();
+            }
+        }
+
+        function saveEntrantsAndClose() {
+            const oldEntrants = [...entrants];
+            
+            weeks.forEach(week => {
+                const oldPayments = [...week.payments];
+                week.payments = [];
+                
+                tempEntrants.forEach((name) => {
+                    const oldIndex = oldEntrants.indexOf(name);
+                    
+                    if (oldIndex !== -1 && oldIndex < oldPayments.length) {
+                        const payment = oldPayments[oldIndex];
+                        if (!payment.hasOwnProperty('fullMonth')) {
+                            payment.fullMonth = 0;
+                        }
+                        week.payments.push(payment);
+                    } else {
+                        week.payments.push({ thursday: 0, monthly: 0, fullMonth: 0 });
+                    }
+                });
+            });
+            
+            payouts.forEach(payout => {
+                const oldName = payout.recipientName;
+                const newIndex = tempEntrants.indexOf(oldName);
+                if (newIndex !== -1) {
+                    payout.recipientIndex = newIndex;
+                } else {
+                    payout.recipientName = `${oldName} (REMOVED)`;
+                }
+            });
+            
+            entrants = [...tempEntrants];
+            
+            if (poolRecipientIndex >= entrants.length) {
+                poolRecipientIndex = 0;
+            }
+            
+            closeModal('manageModal');
+            renderTable();
+            updateSummary();
+            renderSummaryTab();
+            renderPayoutsTab();
+            saveData();
+            
+            alert('Changes saved successfully!');
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('moneyPoolData');
+                weeks = [];
+                currentWeekIndex = 0;
+                poolRecipientIndex = 0;
+                payouts = [];
+                phoneNumbers = {};
+                paymentHistory = [];
+                payoutHistory = [];
+                expenseEntries = [];
+                investmentEntries = [];
+                exchangeRate = 89500;
+                init();
+            }
+        }
+
+        // ============================
+        // EXCHANGE RATE SETTINGS
+        // ============================
+
+        function saveExchangeRate() {
+            const newRate = parseFloat(document.getElementById('exchangeRateInput').value);
+            if (!newRate || newRate <= 0) {
+                alert('Please enter a valid exchange rate.');
+                return;
+            }
+            exchangeRate = newRate;
+            document.getElementById('currentRateDisplay').textContent = exchangeRate.toLocaleString();
+            saveData();
+            const msg = document.getElementById('rateSavedMsg');
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+
+        // ============================
+        // EXPENSES
+        // ============================
+
+        function updateExpenseAmountLabel() {
+            const currency = document.getElementById('expCurrency').value;
+            document.getElementById('expAmountLabel').textContent = currency === 'LBP' ? 'Amount (LBP)' : 'Amount (USD)';
+        }
+
+        function addExpense() {
+            const cashBox = document.getElementById('expCashBox').value;
+            const currency = document.getElementById('expCurrency').value;
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const date = document.getElementById('expDate').value;
+            const description = document.getElementById('expDescription').value.trim();
+
+            if (!amount || amount <= 0) { alert('Please enter a valid amount.'); return; }
+            if (!date) { alert('Please select a date.'); return; }
+            if (!description) { alert('Please enter a description.'); return; }
+
+            const amountUSD = currency === 'LBP' ? amount / exchangeRate : amount;
+
+            if (editingExpenseId !== null) {
+                // Update existing
+                const idx = expenseEntries.findIndex(e => e.id === editingExpenseId);
+                if (idx !== -1) {
+                    expenseEntries[idx] = {
+                        ...expenseEntries[idx],
+                        cashBox, currency, amount, amountUSD, date, description,
+                        exchangeRate: currency === 'LBP' ? exchangeRate : null
+                    };
+                }
+                editingExpenseId = null;
+                document.getElementById('expEditNote').style.display = 'none';
+            } else {
+                expenseEntries.push({
+                    id: Date.now() + Math.random(),
+                    cashBox, currency, amount, amountUSD, date, description,
+                    timestamp: new Date().toISOString(),
+                    exchangeRate: currency === 'LBP' ? exchangeRate : null
+                });
+            }
+
+            // Reset form
+            document.getElementById('expAmount').value = '';
+            document.getElementById('expDescription').value = '';
+            document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expCurrency').value = 'USD';
+            updateExpenseAmountLabel();
+
+            saveData();
+            updateSummary();
+            renderExpensesList();
+        }
+
+        function editExpense(id) {
+            const entry = expenseEntries.find(e => e.id === id);
+            if (!entry) return;
+            editingExpenseId = id;
+            document.getElementById('expCashBox').value = entry.cashBox;
+            document.getElementById('expCurrency').value = entry.currency;
+            document.getElementById('expAmount').value = entry.amount;
+            document.getElementById('expDate').value = entry.date;
+            document.getElementById('expDescription').value = entry.description;
+            updateExpenseAmountLabel();
+            document.getElementById('expEditNote').style.display = 'inline';
+            document.getElementById('expensesTab').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function cancelExpenseEdit() {
+            editingExpenseId = null;
+            document.getElementById('expAmount').value = '';
+            document.getElementById('expDescription').value = '';
+            document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expCurrency').value = 'USD';
+            updateExpenseAmountLabel();
+            document.getElementById('expEditNote').style.display = 'none';
+        }
+
+        function deleteExpense(id) {
+            if (!confirm('Delete this expense entry?')) return;
+            expenseEntries = expenseEntries.filter(e => e.id !== id);
+            saveData();
+            updateSummary();
+            renderExpensesList();
+        }
+
+        function setExpenseSort(mode) {
+            expenseSortMode = mode;
+            document.querySelectorAll('[id^="expSort"]').forEach(b => b.classList.remove('active'));
+            document.getElementById(`expSort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+            renderExpensesList();
+        }
+
+        function renderExpensesList() {
+            const container = document.getElementById('expensesList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let sorted = [...expenseEntries];
+            if (expenseSortMode === 'date') sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+            else if (expenseSortMode === 'desc') sorted.sort((a, b) => a.description.localeCompare(b.description));
+            else if (expenseSortMode === 'amount') sorted.sort((a, b) => b.amountUSD - a.amountUSD);
+            else if (expenseSortMode === 'box') sorted.sort((a, b) => a.cashBox.localeCompare(b.cashBox));
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:30px;">No expenses recorded yet</p>';
+                return;
+            }
+
+            // Totals
+            const totalBeitHob = expenseEntries.filter(e => e.cashBox === 'beit-hob').reduce((s, e) => s + e.amountUSD, 0);
+            const totalPool = expenseEntries.filter(e => e.cashBox === 'pool').reduce((s, e) => s + e.amountUSD, 0);
+            const totalAll = totalBeitHob + totalPool;
+            const totalsDiv = document.createElement('div');
+            totalsDiv.style.cssText = 'padding:10px 20px; background:#f8f9fa; border-bottom:1px solid #ecf0f1; font-size:13px; display:flex; gap:20px; flex-wrap:wrap;';
+            totalsDiv.innerHTML = `<span><strong>Total Expenses:</strong> $${totalAll.toFixed(2)}</span>
+                <span style="color:#e74c3c">Beit Hob: $${totalBeitHob.toFixed(2)}</span>
+                <span style="color:#3498db">Pool: $${totalPool.toFixed(2)}</span>`;
+            container.appendChild(totalsDiv);
+
+            sorted.forEach(entry => {
+                const boxClass = entry.cashBox === 'beit-hob' ? 'beit-hob-expense' : 'pool-expense';
+                const boxLabel = entry.cashBox === 'beit-hob' ? 'Beit Hob' : 'Pool';
+                const boxTagClass = entry.cashBox === 'beit-hob' ? 'beit-hob' : 'pool';
+                const originalStr = entry.currency === 'LBP'
+                    ? `${entry.amount.toLocaleString()} LBP (rate: ${entry.exchangeRate?.toLocaleString()})`
+                    : `$${entry.amount.toFixed(2)} USD`;
+
+                const div = document.createElement('div');
+                div.className = `expense-item ${boxClass}`;
+                div.innerHTML = `
+                    <div style="font-size:13px; color:#2c3e50;">${entry.date}</div>
+                    <div style="font-weight:bold; color:#e74c3c;">$${entry.amountUSD.toFixed(2)}</div>
+                    <div><span class="cashbox-tag ${boxTagClass}">${boxLabel}</span></div>
+                    <div style="font-size:13px;">${entry.description}</div>
+                    <div style="font-size:11px; color:#7f8c8d;">${originalStr}</div>
+                    <div class="transaction-actions">
+                        <button class="edit" onclick="editExpense(${JSON.stringify(entry.id)})">✏️</button>
+                        <button class="delete" onclick="deleteExpense(${JSON.stringify(entry.id)})">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ============================
+        // INVESTMENTS
+        // ============================
+
+        function updateInvestmentAmountLabel() {
+            const currency = document.getElementById('invCurrency').value;
+            document.getElementById('invAmountLabel').textContent = currency === 'LBP' ? 'Amount (LBP)' : 'Amount (USD)';
+        }
+
+        function addInvestment() {
+            const currency = document.getElementById('invCurrency').value;
+            const amount = parseFloat(document.getElementById('invAmount').value);
+            const date = document.getElementById('invDate').value;
+            const description = document.getElementById('invDescription').value.trim();
+
+            if (!amount || amount <= 0) { alert('Please enter a valid amount.'); return; }
+            if (!date) { alert('Please select a date.'); return; }
+            if (!description) { alert('Please enter a description.'); return; }
+
+            const amountUSD = currency === 'LBP' ? amount / exchangeRate : amount;
+
+            if (editingInvestmentId !== null) {
+                const idx = investmentEntries.findIndex(e => e.id === editingInvestmentId);
+                if (idx !== -1) {
+                    investmentEntries[idx] = {
+                        ...investmentEntries[idx],
+                        currency, amount, amountUSD, date, description,
+                        exchangeRate: currency === 'LBP' ? exchangeRate : null
+                    };
+                }
+                editingInvestmentId = null;
+                document.getElementById('invEditNote').style.display = 'none';
+            } else {
+                investmentEntries.push({
+                    id: Date.now() + Math.random(),
+                    currency, amount, amountUSD, date, description,
+                    timestamp: new Date().toISOString(),
+                    exchangeRate: currency === 'LBP' ? exchangeRate : null
+                });
+            }
+
+            document.getElementById('invAmount').value = '';
+            document.getElementById('invDescription').value = '';
+            document.getElementById('invDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('invCurrency').value = 'USD';
+            updateInvestmentAmountLabel();
+
+            saveData();
+            updateSummary();
+            renderInvestmentsList();
+        }
+
+        function editInvestment(id) {
+            const entry = investmentEntries.find(e => e.id === id);
+            if (!entry) return;
+            editingInvestmentId = id;
+            document.getElementById('invCurrency').value = entry.currency;
+            document.getElementById('invAmount').value = entry.amount;
+            document.getElementById('invDate').value = entry.date;
+            document.getElementById('invDescription').value = entry.description;
+            updateInvestmentAmountLabel();
+            document.getElementById('invEditNote').style.display = 'inline';
+            document.getElementById('investmentsTab').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function cancelInvestmentEdit() {
+            editingInvestmentId = null;
+            document.getElementById('invAmount').value = '';
+            document.getElementById('invDescription').value = '';
+            document.getElementById('invDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('invCurrency').value = 'USD';
+            updateInvestmentAmountLabel();
+            document.getElementById('invEditNote').style.display = 'none';
+        }
+
+        function deleteInvestment(id) {
+            if (!confirm('Delete this investment entry?')) return;
+            investmentEntries = investmentEntries.filter(e => e.id !== id);
+            saveData();
+            updateSummary();
+            renderInvestmentsList();
+        }
+
+        function setInvestmentSort(mode) {
+            investmentSortMode = mode;
+            document.querySelectorAll('[id^="invSort"]').forEach(b => b.classList.remove('active'));
+            document.getElementById(`invSort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+            renderInvestmentsList();
+        }
+
+        function renderInvestmentsList() {
+            const container = document.getElementById('investmentsList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let sorted = [...investmentEntries];
+            if (investmentSortMode === 'date') sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+            else if (investmentSortMode === 'desc') sorted.sort((a, b) => a.description.localeCompare(b.description));
+            else if (investmentSortMode === 'amount') sorted.sort((a, b) => b.amountUSD - a.amountUSD);
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:30px;">No investments recorded yet</p>';
+                return;
+            }
+
+            const totalUSD = investmentEntries.reduce((s, e) => s + e.amountUSD, 0);
+            const totalsDiv = document.createElement('div');
+            totalsDiv.style.cssText = 'padding:10px 20px; background:#f8f9fa; border-bottom:1px solid #ecf0f1; font-size:13px;';
+            totalsDiv.innerHTML = `<strong>Total Invested:</strong> $${totalUSD.toFixed(2)}`;
+            container.appendChild(totalsDiv);
+
+            sorted.forEach(entry => {
+                const originalStr = entry.currency === 'LBP'
+                    ? `${entry.amount.toLocaleString()} LBP (rate: ${entry.exchangeRate?.toLocaleString()})`
+                    : `$${entry.amount.toFixed(2)} USD`;
+
+                const div = document.createElement('div');
+                div.className = 'expense-item investment-expense';
+                div.style.gridTemplateColumns = '140px 90px 1fr 130px 80px';
+                div.innerHTML = `
+                    <div style="font-size:13px; color:#2c3e50;">${entry.date}</div>
+                    <div style="font-weight:bold; color:#9b59b6;">$${entry.amountUSD.toFixed(2)}</div>
+                    <div style="font-size:13px;">${entry.description}</div>
+                    <div style="font-size:11px; color:#7f8c8d;">${originalStr}</div>
+                    <div class="transaction-actions">
+                        <button class="edit" onclick="editInvestment(${JSON.stringify(entry.id)})">✏️</button>
+                        <button class="delete" onclick="deleteInvestment(${JSON.stringify(entry.id)})">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        init();
+    </script>
+</body>
+</html>
