@@ -107,7 +107,7 @@
         },
         {
           "thursday": 15,
-          "monthly": 0,
+          "monthly": 50,
           "fullMonth": 0
         },
         {
@@ -1042,6 +1042,16 @@
       "direction": "received",
       "weekDate": "2026-02-05",
       "timestamp": "2026-02-13T11:10:53.463Z"
+    },
+    {
+      "id": 1770981055920.6694,
+      "entrantIndex": 16,
+      "entrantName": "شمس",
+      "amount": 50,
+      "type": "monthly",
+      "direction": "received",
+      "weekDate": "2026-02-05",
+      "timestamp": "2026-02-13T11:10:55.920Z"
     }
   ],
   "payoutHistory": [
