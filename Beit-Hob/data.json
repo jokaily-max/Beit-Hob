@@ -286,7 +286,7 @@
           "fullMonth": 0
         },
         {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -1110,6 +1110,16 @@
       "direction": "received",
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-16T17:47:14.021Z"
+    },
+    {
+      "id": 1771266335455.972,
+      "entrantIndex": 10,
+      "entrantName": "Al Mobtassem",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-16T18:25:35.455Z"
     }
   ],
   "payoutHistory": [
