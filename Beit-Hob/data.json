@@ -239,6 +239,18 @@
         "poolGroup": "men"
       },
       "deletedAt": null
+    },
+    {
+      "id": "p_21",
+      "name": "Lynn",
+      "profile": {
+        "weeklyAmount": 10,
+        "monthlyAmount": 30,
+        "monthlyToInvestment": 25,
+        "monthlyToBeitHob": 5,
+        "poolGroup": "women"
+      },
+      "deletedAt": null
     }
   ],
   "peopleOrder": [
@@ -261,9 +273,10 @@
     "p_17",
     "p_18",
     "p_19",
-    "p_20"
+    "p_20",
+    "p_21"
   ],
-  "_nextPersonSeq": 21,
+  "_nextPersonSeq": 22,
   "deletedPeopleIds": [],
   "weeks": [
     {
@@ -367,6 +380,11 @@
         "p_20": {
           "thursday": 15,
           "monthly": 50,
+          "fullMonth": 0
+        },
+        "p_21": {
+          "thursday": 0,
+          "monthly": 0,
           "fullMonth": 0
         }
       },
@@ -510,6 +528,13 @@
           "monthlyToInvestment": 35,
           "monthlyToBeitHob": 15,
           "poolGroup": "men"
+        },
+        "p_21": {
+          "weeklyAmount": 10,
+          "monthlyAmount": 30,
+          "monthlyToInvestment": 25,
+          "monthlyToBeitHob": 5,
+          "poolGroup": "women"
         }
       }
     },
@@ -615,6 +640,11 @@
           "thursday": 45,
           "monthly": 0,
           "fullMonth": 0
+        },
+        "p_21": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
         }
       },
       "rateSnapshots": {
@@ -757,6 +787,13 @@
           "monthlyToInvestment": 35,
           "monthlyToBeitHob": 15,
           "poolGroup": "men"
+        },
+        "p_21": {
+          "weeklyAmount": 10,
+          "monthlyAmount": 30,
+          "monthlyToInvestment": 25,
+          "monthlyToBeitHob": 5,
+          "poolGroup": "women"
         }
       }
     },
@@ -862,6 +899,11 @@
           "thursday": 0,
           "monthly": 0,
           "fullMonth": 0
+        },
+        "p_21": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
         }
       },
       "rateSnapshots": {
@@ -1004,6 +1046,13 @@
           "monthlyToInvestment": 35,
           "monthlyToBeitHob": 15,
           "poolGroup": "men"
+        },
+        "p_21": {
+          "weeklyAmount": 10,
+          "monthlyAmount": 30,
+          "monthlyToInvestment": 25,
+          "monthlyToBeitHob": 5,
+          "poolGroup": "women"
         }
       }
     }
