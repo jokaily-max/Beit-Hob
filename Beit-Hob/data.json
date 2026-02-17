@@ -268,7 +268,7 @@
         "monthlyAmount": 30,
         "monthlyToInvestment": 25,
         "monthlyToBeitHob": 5,
-        "poolGroup": "men"
+        "poolGroup": "women"
       },
       "deletedAt": null,
       "joinedWeekIndex": 2
