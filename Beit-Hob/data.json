@@ -244,10 +244,10 @@
       "id": "p_21",
       "name": "Lynn",
       "profile": {
-        "weeklyAmount": 0,
-        "monthlyAmount": 0,
-        "monthlyToInvestment": 0,
-        "monthlyToBeitHob": 0,
+        "weeklyAmount": 10,
+        "monthlyAmount": 10,
+        "monthlyToInvestment": 5,
+        "monthlyToBeitHob": 5,
         "poolGroup": "women"
       },
       "deletedAt": null
