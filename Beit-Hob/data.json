@@ -902,7 +902,7 @@
           "fullMonth": 0
         },
         "p_17": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -2485,6 +2485,16 @@
       "direction": "received",
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-19T18:28:15.167Z"
+    },
+    {
+      "id": 1771525702238.9805,
+      "entrantId": "p_17",
+      "entrantName": "Shams",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-19T18:28:22.238Z"
     }
   ],
   "payoutHistory": [
