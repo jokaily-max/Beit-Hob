@@ -822,7 +822,7 @@
       "date": "2026-02-19",
       "payments": {
         "p_1": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -2465,6 +2465,16 @@
       "direction": "received",
       "weekDate": "2026-03-05",
       "timestamp": "2026-02-19T08:14:05.754Z"
+    },
+    {
+      "id": 1771498421408.2349,
+      "entrantId": "p_1",
+      "entrantName": "David",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-19T10:53:41.408Z"
     }
   ],
   "payoutHistory": [
