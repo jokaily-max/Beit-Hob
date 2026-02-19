@@ -862,7 +862,7 @@
           "fullMonth": 0
         },
         "p_9": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -2475,6 +2475,16 @@
       "direction": "received",
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-19T10:53:41.408Z"
+    },
+    {
+      "id": 1771525695167.3806,
+      "entrantId": "p_9",
+      "entrantName": "Sakr",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-19T18:28:15.167Z"
     }
   ],
   "payoutHistory": [
