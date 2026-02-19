@@ -1397,7 +1397,7 @@
         "p_13": {
           "thursday": 0,
           "monthly": 0,
-          "fullMonth": 0
+          "fullMonth": 110
         },
         "p_14": {
           "thursday": 0,
@@ -2455,6 +2455,16 @@
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-16T18:25:35.455Z",
       "entrantId": "p_11"
+    },
+    {
+      "id": 1771488845754.6653,
+      "entrantId": "p_13",
+      "entrantName": "Kevork",
+      "amount": 110,
+      "type": "fullMonth",
+      "direction": "received",
+      "weekDate": "2026-03-05",
+      "timestamp": "2026-02-19T08:14:05.754Z"
     }
   ],
   "payoutHistory": [
