@@ -1335,9 +1335,268 @@
           "poolGroup": "women"
         }
       }
+    },
+    {
+      "date": "2026-03-05",
+      "payments": {
+        "p_1": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_2": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_3": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_5": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_6": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_7": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_8": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_9": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_10": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_11": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_12": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_13": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_14": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_4": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_15": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_16": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_17": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_18": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_19": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_20": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        },
+        "p_21": {
+          "thursday": 0,
+          "monthly": 0,
+          "fullMonth": 0
+        }
+      },
+      "rateSnapshots": {
+        "p_1": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_2": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_3": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_5": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_6": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_7": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_8": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_9": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_10": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_11": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_12": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_13": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_14": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_4": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_15": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_16": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_17": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_18": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_19": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_20": {
+          "weeklyAmount": 15,
+          "monthlyAmount": 50,
+          "monthlyToInvestment": 35,
+          "monthlyToBeitHob": 15,
+          "poolGroup": "men"
+        },
+        "p_21": {
+          "weeklyAmount": 0,
+          "monthlyAmount": 30,
+          "monthlyToInvestment": 25,
+          "monthlyToBeitHob": 5,
+          "poolGroup": "women"
+        }
+      }
     }
   ],
-  "currentWeekIndex": 3,
+  "currentWeekIndex": 4,
   "poolRecipientIndex": 2,
   "poolRecipientIndexWomen": 0,
   "payouts": [
