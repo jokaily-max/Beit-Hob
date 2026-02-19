@@ -2502,6 +2502,17 @@
       "description": "Electricity EDL Sep Oct 2025",
       "timestamp": "2026-02-13T16:57:34.342Z",
       "exchangeRate": null
+    },
+    {
+      "id": 1771489049373.229,
+      "cashBox": "beit-hob",
+      "currency": "LBP",
+      "amount": 3080000,
+      "amountUSD": 34.41340782122905,
+      "date": "2026-02-17",
+      "description": "Dikwene Market Cleaning supplies",
+      "timestamp": "2026-02-19T08:17:29.373Z",
+      "exchangeRate": 89500
     }
   ],
   "investmentEntries": [],
