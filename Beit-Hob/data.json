@@ -897,7 +897,7 @@
           "fullMonth": 0
         },
         "p_16": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -2495,6 +2495,16 @@
       "direction": "received",
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-19T18:28:22.238Z"
+    },
+    {
+      "id": 1771526162285.9692,
+      "entrantId": "p_16",
+      "entrantName": "Jad",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-19T18:36:02.285Z"
     }
   ],
   "payoutHistory": [
