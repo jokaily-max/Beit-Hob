@@ -2553,6 +2553,17 @@
       "description": "Dikwene Market Cleaning supplies",
       "timestamp": "2026-02-19T08:17:29.373Z",
       "exchangeRate": 89500
+    },
+    {
+      "id": 1771574473301.258,
+      "cashBox": "beit-hob",
+      "currency": "USD",
+      "amount": 9.5,
+      "amountUSD": 9.5,
+      "date": "2026-02-19",
+      "description": "Deep Clean Cleaning supplies",
+      "timestamp": "2026-02-20T08:01:13.301Z",
+      "exchangeRate": null
     }
   ],
   "investmentEntries": [],
