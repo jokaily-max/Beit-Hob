@@ -862,7 +862,7 @@
           "fullMonth": 0
         },
         "p_9": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -897,12 +897,12 @@
           "fullMonth": 0
         },
         "p_16": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
         "p_17": {
-          "thursday": 0,
+          "thursday": 15,
           "monthly": 0,
           "fullMonth": 0
         },
@@ -2475,6 +2475,36 @@
       "direction": "received",
       "weekDate": "2026-02-19",
       "timestamp": "2026-02-19T10:53:41.408Z"
+    },
+    {
+      "id": 1771574372903.3967,
+      "entrantId": "p_9",
+      "entrantName": "Sakr",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-20T07:59:32.903Z"
+    },
+    {
+      "id": 1771574376253.5164,
+      "entrantId": "p_16",
+      "entrantName": "Jad",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-20T07:59:36.253Z"
+    },
+    {
+      "id": 1771574379090.688,
+      "entrantId": "p_17",
+      "entrantName": "Shams",
+      "amount": 15,
+      "type": "thursday",
+      "direction": "received",
+      "weekDate": "2026-02-19",
+      "timestamp": "2026-02-20T07:59:39.090Z"
     }
   ],
   "payoutHistory": [
